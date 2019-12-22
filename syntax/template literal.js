@@ -1,0 +1,9 @@
+var name = 'Gwnagheyon';
+var letter = ` Dear ${name}
+
+
+Study about JavaScript...Study about JavaScript...Study about JavaScript...Study about JavaScript...Study about JavaScript...
+Study about JavaScript...Study about JavaScript...Study about JavaScript...Study about JavaScript...
+Study about JavaScript...Study about JavaScript...Study about JavaScript...Study about JavaScript...
+${name}`;
+console.log(letter);
