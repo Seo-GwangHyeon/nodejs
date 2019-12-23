@@ -2,6 +2,13 @@ var http = require('http');
 var fs = require('fs');
 var url = require('url');
 
+//CRUD
+//Create
+//Read
+//Update
+//Delete
+// File 을 생성 수정 삭제 등 
+
 var app = http.createServer(function(request,response){
     var _url = request.url;
 
