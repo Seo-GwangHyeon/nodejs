@@ -7,6 +7,24 @@ var url = require('url');
 //Update
 //Delete
 // File 을 생성 수정 삭제 등
+function templateHTML(_title, _list, body) {
+  var template = `
+  <!doctype html>
+  <html>
+  <head>
+  <title>WEB1 - ${_title}</title>
+  <meta charset="utf-8">
+  </head>
+  <body>
+  <h1><a href="/">WEB</a></h1>
+  ${_list}
+  ${body}
+  </body>
+  </html>`;
+  return template;
+}
+
+
 var app = http.createServer(function(request, response) {
   var _url = request.url;
 
@@ -33,42 +51,16 @@ var app = http.createServer(function(request, response) {
       if (queryData.id === undefined) {
         title = 'Welcome';
         description = 'Hello, Node.js';
-        template = `
-      <!doctype html>
-      <html>
-      <head>
-      <title>WEB1 - ${title}</title>
-      <meta charset="utf-8">
-      </head>
-      <body>
-      <h1><a href="/">WEB</a></h1>
-      ${list}
-      <h2>${title}</h2>
-      <p>${description}  </p>
-      </body>
-      </html>`;
+        template = templateHTML(title, list, `<h2>${title}</h2><p>${description}</p>`);
         response.writeHead(200);
         response.end(template);
       } else {
         fs.readFile(`data/${queryData.id}`, 'utf8', function(err, filedescription) {
           title = queryData.id;
           description = filedescription;
-          template = `
-        <!doctype html>
-        <html>
-        <head>
-        <title>WEB1 - ${title}</title>
-        <meta charset="utf-8">
-        </head>
-        <body>
-        <h1><a href="/">WEB</a></h1>
-        ${list}
-        <h2>${title}</h2>
-        <p>${description}  </p>
-        </body>
-        </html>`;
-        response.writeHead(200);
-        response.end(template);
+          template = templateHTML(title, list, `<h2>${title}</h2><p>${description}</p>`);
+          response.writeHead(200);
+          response.end(template);
         });
       } //end else
     })
