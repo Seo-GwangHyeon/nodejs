@@ -12,7 +12,7 @@ function templateHTML(_title, _list, body) {
   <!doctype html>
   <html>
   <head>
-  <title>WEB1 - ${_title}</title>
+  <title>WEB2 - ${_title}</title>
   <meta charset="utf-8">
   </head>
   <body>

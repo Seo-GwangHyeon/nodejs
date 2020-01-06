@@ -13,7 +13,7 @@ var a=function(){
 }
 
 a();
-console.log('slowfunc');
+console.log('slowfunc')
 //slowfunc라는 오래걸리는 함수 실행 완료 이후
 //callback이라는 함수를 실행하여 slowfunc가 완료 됐을을
 function slowfunc(callback)
