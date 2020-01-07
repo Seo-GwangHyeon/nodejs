@@ -115,10 +115,20 @@ var app = http.createServer(function(request, response) {
       var post = qs.parse(body);
       var title = post.title;
       var description = post.description;
-      
+      fs.writeFile(`data/${title}`, description, 'utf8', function(err) {
+        // 에러 처리방법
+        response.writeHead(200);
+        // 302는 페이지를 리다이렉션 시킨다.
+        response.writeHead(302,
+          {Location: `/?id=${title}`}
+        );
+        response.end();
+
+        //글 작성 후 리다이렉션 해준다.
+
+      });
     });
-    response.writeHead(200);
-    response.end('Success ');
+
   } else {
     response.writeHead(404);
     response.end('Not Found');
