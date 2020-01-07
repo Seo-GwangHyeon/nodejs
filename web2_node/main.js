@@ -1,6 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
+var qs = require('querystring');
 //CRUD
 //Create
 //Read
@@ -44,7 +45,8 @@ function templateList(filelist) {
   list = list + '</ul>';
   return list;
 }
-
+// request : 요청할 때 웹브라우저가 보낸 정보
+// response : 응답할 때 우리가 웹브라우저에 줄 정보
 var app = http.createServer(function(request, response) {
   var _url = request.url;
 
@@ -81,8 +83,7 @@ var app = http.createServer(function(request, response) {
       var list = templateList(filelist);
       var template = templateHTML(title, list,
         `
-        <form action="http://localhost:3000/process_create"
-        method="post">
+        <form action="http://localhost:3000/create_process" method="post">
           <p>
             <input type="text" name="title" placeholder="title">
           </p>
@@ -98,6 +99,26 @@ var app = http.createServer(function(request, response) {
       response.writeHead(200);
       response.end(template);
     });
+  } else if (pathname === '/create_process') {
+    var body = '';
+    request.on('data', function(data) { // 웹브라우저가  post방식으로 데이터를 처리할 때
+      // 큰 데이터를 한꺼번에 처리하다가는 프로그램이 꺼지거나
+      // 컴퓨터에 무리가 간다
+      // -> nodejs에서는 post 방식으로 전송된 데이터가 많을 경우를 대비해서
+      // 특정량의 데이터로 나누어서  서버쪽에서 수신 할때마다 콜백함수를 호출하도록 약속 되어있다.
+      // 콜백함수를 호출할때 data라는 인자를 통해서 데이터 정보를 준다.
+      body = body + data;
+      //콜백이 실행될 때마다 body에 데이터 추가
+    });
+    request.on('end', function() {
+      //더이상 들어올 데이터가 없으 이 콜백함수를 호출하도록 약속되어있음
+      var post = qs.parse(body);
+      var title = post.title;
+      var description = post.description;
+      
+    });
+    response.writeHead(200);
+    response.end('Success ');
   } else {
     response.writeHead(404);
     response.end('Not Found');
