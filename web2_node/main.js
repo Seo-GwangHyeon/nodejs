@@ -45,8 +45,8 @@ function templateList(filelist) {
   list = list + '</ul>';
   return list;
 }
-function confirm_delete()
-{
+
+function confirm_delete() {
   alert('delete');
 }
 // request : 요청할 때 웹브라우저가 보낸 정보
@@ -67,7 +67,7 @@ var app = http.createServer(function(request, response) {
         var list = templateList(filelist);
         var template = templateHTML(title, list,
           `<h2>${title}</h2><p>${description}</p>`,
-           `<a href="/create">create</a>`);
+          `<a href="/create">create</a>`);
         response.writeHead(200);
         response.end(template);
       });
@@ -80,7 +80,7 @@ var app = http.createServer(function(request, response) {
             `<h2>${title}</h2><p>${description}</p>`,
             `<a href="/create">create</a>
              <a href="/update?id=${title}">update</a>
-             <form actoun="delete_process" method="post" onsubmit="confirm_delete">
+             <form action="delete_process" method="post" onsubmit="confirm_delete">
               <input type="hidden" name="id" value="${title}">
               <input type="submit" value="delete">
               </form>`
@@ -110,7 +110,7 @@ var app = http.createServer(function(request, response) {
         </form>
 
         `,
-      '' );
+        '');
       response.writeHead(200);
       response.end(template);
     });
@@ -134,18 +134,17 @@ var app = http.createServer(function(request, response) {
         // 에러 처리방법
         response.writeHead(200);
         // 302는 페이지를 리다이렉션 시킨다.
-        response.writeHead(302,
-          {Location: `/?id=${title}`}
-        );
+        response.writeHead(302, {
+          Location: `/?id=${title}`
+        });
         response.end();
 
         //글 작성 후 리다이렉션 해준다.
 
       });
     });
-  }//end create_process
-  else if(pathname==='/update')
-  {//update를 구현하려면 2가지가 필요하다.
+  } //end create_process
+  else if (pathname === '/update') { //update를 구현하려면 2가지가 필요하다.
     //1. 폼이 필요하고
     //2. 읽어오는 기능이 필요하다.
     fs.readdir('./data/', function(err, filelist) {
@@ -167,15 +166,14 @@ var app = http.createServer(function(request, response) {
               <input type="submit">
             </p>
           </form>`,
-        `<a href="/create">create</a> <a href="/update?id=${title}">update</a>` );
+          `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
         response.writeHead(200);
         response.end(template);
       });
     });
 
-  }//else if update를
-  else if(pathname==='/update_process')
-  {
+  } //else if update를
+  else if (pathname === '/update_process') {
     var body = '';
     request.on('data', function(data) { // 웹브라우저가  post방식으로 데이터를 처리할 때
       // 큰 데이터를 한꺼번에 처리하다가는 프로그램이 꺼지거나
@@ -193,17 +191,15 @@ var app = http.createServer(function(request, response) {
       var title = post.title;
       var description = post.description;
       //파일이름을 먼저 Rename 한다.
-      fs.rename(`data/${id}`,`data/${title}`, function(error)
-      {
+      fs.rename(`data/${id}`, `data/${title}`, function(error) {
         console.log(error);
         // 콜백함수의 변수와 내부 콜백의 변수가 같아서 오류 발생 했었음
         fs.writeFile(`data/${title}`, description, 'utf8', function(err) {
           // 에러 처리방법
-          response.writeHead(200);
           // 302는 페이지를 리다이렉션 시킨다.
-          response.writeHead(302,
-            {Location: `/?id=${title}`}
-          );
+          response.writeHead(302, {
+            Location: `/?id=${title}`
+          });
           response.end();
 
           //글 작성 후 리다이렉션 해준다.
@@ -211,12 +207,29 @@ var app = http.createServer(function(request, response) {
         });
       });
     });
-  }// end else /update_process
-  else if(pathname==='/delete_process')
-  {
+  } // end else /update_process
+  else if (pathname === '/delete_process') {
+    var body = '';
+    request.on('data', function(data) {
+      body = body + data;
+      //콜백이 실행될 때마다 body에 데이터 추가
+    });
+    request.on('end', function() {
+      var post = qs.parse(body);
+      var id = post.id;
+      const path=`./data/${id}`;
 
-  }// end else /delete_process
-   else {
+      fs.unlink(path, function(err){
+        if( err)
+        {
+          console.error(err)
+          return;
+        }
+        response.writeHead(302, {  Location: `/` });
+        response.end();
+      });
+    });
+  } else {
     response.writeHead(404);
     response.end('Not Found');
   }
