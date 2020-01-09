@@ -20,8 +20,8 @@ var roles =
 for(var name in roles)
 {//name 에는 객체의 식별자가 들어가도록 약속되어 있다.
   console.log('object:', name, 'value :',roles[name] );
-    console.log('object:', name, 'value :',roles.name );
-    
+    console.log('object:', name, 'value :',roles. name );// 이건 안됨
+
 
 }
 
