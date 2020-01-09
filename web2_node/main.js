@@ -16,7 +16,7 @@ var qs = require('querystring');
 // 리스트를 통해서 별명 확인 : pm2 listen
 // 소스코드 변경후 껐다 켜지 않아도 되는 소스
 // pm2 start app.js --watch
-
+//pm2 start web2_node/main.js --watch --ignore-watch="data/*"
 function templateHTML(_title, _list, body, control) {
   var template = `
   <!doctype html>
@@ -44,6 +44,10 @@ function templateList(filelist) {
   }
   list = list + '</ul>';
   return list;
+}
+function confirm_delete()
+{
+  alert('delete');
 }
 // request : 요청할 때 웹브라우저가 보낸 정보
 // response : 응답할 때 우리가 웹브라우저에 줄 정보
@@ -74,7 +78,12 @@ var app = http.createServer(function(request, response) {
           var list = templateList(filelist);
           var template = templateHTML(title, list,
             `<h2>${title}</h2><p>${description}</p>`,
-            `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`
+            `<a href="/create">create</a>
+             <a href="/update?id=${title}">update</a>
+             <form actoun="delete_process" method="post" onsubmit="confirm_delete">
+              <input type="hidden" name="id" value="${title}">
+              <input type="submit" value="delete">
+              </form>`
           );
           response.writeHead(200);
           response.end(template);
@@ -201,11 +210,12 @@ var app = http.createServer(function(request, response) {
 
         });
       });
-
-
     });
+  }// end else /update_process
+  else if(pathname==='/delete_process')
+  {
 
-  }
+  }// end else /delete_process
    else {
     response.writeHead(404);
     response.end('Not Found');
