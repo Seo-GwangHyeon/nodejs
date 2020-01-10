@@ -1,7 +1,3 @@
-var http = require('http');
-var fs = require('fs');
-var url = require('url');
-var qs = require('querystring');
 //CRUD
 //Create
 //Read
@@ -18,40 +14,13 @@ var qs = require('querystring');
 // pm2 start app.js --watch
 //pm2 start web2_node/main.js --watch --ignore-watch="data/*"
 
-var template =
-{
-  html: function (_title, _list, body, control) {
-    var template = `
-    <!doctype html>
-    <html>
-    <head>
-    <title>WEB2 - ${_title}</title>
-    <meta charset="utf-8">
-    </head>
-    <body>
-    <h1><a href="/">WEB</a></h1>
-    ${_list}
-    ${control}
-    ${body}
-    </body>
-    </html>`;
-    return template;
-  },
-  list:function (filelist) {
-    var list = '<ul>';
-    var i = 0;
-    while (i < filelist.length) {
-      list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
-      i = i + 1;
-    }
-    list = list + '</ul>';
-    return list;
-  }
-}
 
-
-
-
+var http = require('http');
+var fs = require('fs');
+var url = require('url');
+var qs = require('querystring');
+//template 모듈을 불러온다.
+var template = require('./lib/template.js');
 
 function confirm_delete() {
   alert('delete');
