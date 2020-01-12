@@ -15,7 +15,7 @@
 //pm2 start web2_node/main.js --watch --ignore-watch="data/*"
 
 
-var http = require('http');
+var http = require('http');//http 모듈을 가져
 var fs = require('fs');
 var url = require('url');
 var qs = require('querystring');
@@ -31,6 +31,9 @@ function confirm_delete() {
 // request : 요청할 때 웹브라우저가 보낸 정보
 // response : 응답할 때 우리가 웹브라우저에 줄 정보
 var app = http.createServer(function(request, response) {
+  //http 모듈읜ㄴ CreateServer 메소드
+  // 함수의 첫번째 parameter 로는 request를 주고
+  // 함수의 두번째 parameter 사용자에게 전송할 정보 responose를 준다.
   var _url = request.url;
 
   var queryData = url.parse(_url, true).query;
