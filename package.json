@@ -1,0 +1,23 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "Study about Node.js Basic",
+  "main": "index.js",
+  "dependencies": {
+    "sanitize-html": "^1.20.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Seo-GwangHyeon/nodejs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Seo-GwangHyeon/nodejs/issues"
+  },
+  "homepage": "https://github.com/Seo-GwangHyeon/nodejs#readme"
+}

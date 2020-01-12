@@ -21,7 +21,10 @@ var url = require('url');
 var qs = require('querystring');
 //template 모듈을 불러온다.
 var template = require('./lib/template.js');
+var path =require('path');
+var sanitizeHtml = require('sanitize-html');
 
+console.log(sanitizeHtml);
 function confirm_delete() {
   alert('delete');
 }
@@ -49,15 +52,24 @@ var app = http.createServer(function(request, response) {
       });
     } else {
       fs.readdir('./data/', function(err, filelist) {
-        fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
+        // .. 을 이용해서 서버 컴퓨터의 모든 정보 및 디렉토리를 읽을 수 있음
+        // 그러므로 오염된 정보가 들어오지 않도록 보안 해준다.
+        // ../를 걸러준다.
+        var filteredId=path.parse(queryData.id).base;
+
+        fs.readFile(`data/${filteredId}`, 'utf8', function(err, description) {
           var title = queryData.id;
+          var sanitizedTtile = sanitizeHtml(title);
+          var sanitizedDescription = sanitizeHtml(description,{
+            allowedTags:['h1']
+          });
           var list = template.list(filelist);
           var html = template.html(title, list,
-            `<h2>${title}</h2><p>${description}</p>`,
+            `<h2>${sanitizedTtile}</h2><p>${sanitizedDescription}</p>`,
             `<a href="/create">create</a>
-             <a href="/update?id=${title}">update</a>
+             <a href="/update?id=${sanitizedTtile}">update</a>
              <form action="delete_process" method="post" onsubmit="confirm_delete">
-              <input type="hidden" name="id" value="${title}">
+              <input type="hidden" name="id" value="${sanitizedTtile}">
               <input type="submit" value="delete">
               </form>`
           );
@@ -124,7 +136,8 @@ var app = http.createServer(function(request, response) {
     //1. 폼이 필요하고
     //2. 읽어오는 기능이 필요하다.
     fs.readdir('./data/', function(err, filelist) {
-      fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
+      var filteredId=path.parse(queryData.id).base;
+      fs.readFile(`data/${filteredId}`, 'utf8', function(err, description) {
         var title = queryData.id;
         var list = template.list(filelist);
         var html = template.html(title, list,
@@ -166,8 +179,10 @@ var app = http.createServer(function(request, response) {
       var id = post.id;
       var title = post.title;
       var description = post.description;
+      var filteredId=path.parse(id).base;
       //파일이름을 먼저 Rename 한다.
-      fs.rename(`data/${id}`, `data/${title}`, function(error) {
+
+      fs.rename(`data/${filteredId}`, `data/${title}`, function(error) {
         console.log(error);
         // 콜백함수의 변수와 내부 콜백의 변수가 같아서 오류 발생 했었음
         fs.writeFile(`data/${title}`, description, 'utf8', function(err) {
@@ -186,12 +201,13 @@ var app = http.createServer(function(request, response) {
   } // end else /update_process
   else if (pathname === '/delete_process') {
     var body = '';
-    request.on('data', function(data) {
+    request.on('data',function(data) {
       body = body + data;
       //콜백이 실행될 때마다 body에 데이터 추가
     });
     request.on('end', function() {
       var post = qs.parse(body);
+      //var filteredId=path.parse(id).base;
       var id = post.id;
       const path=`./data/${id}`;
 
